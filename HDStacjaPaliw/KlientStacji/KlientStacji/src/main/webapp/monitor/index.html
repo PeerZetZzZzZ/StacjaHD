@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Stacja benzynowa - Monitor</title>
+
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="jumbotron">
+            <h1>Monitor stacji benzynowej</h1>
+            <form method="POST" action="/KlientStacji/MonitorController">
+                <p>Przejdz do Process Monitor'a stacji benzynowej!</p>
+                <p>
+                    <input name="button" value="Process monitor" type="submit" id="processMonitorButton"class="btn btn-primary btn-lg" role="button">
+                </p>
+            </form>
+        </div>
+        <div class="alert alert-danger" role="alert"> ALARM </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Monitor systemu</div>
+            <div class="panel-body">
+                <!-- Table -->
+                <table class="table">
+                    <tr>
+                        <td><p><b>ID zbiornika</b></p></td>	   <td><p><b>Stan zbiornika</b></p></td>	<td><p><b>Dane zbiornika</b></p></td>
+                    </tr>
+                    <tr>
+                        <td><span class="label label-success">Success</span></td>
+                        <td><span  id='failure' class="label label-success"> Success </span></td>
+                        <td><span class="label label-success">Success</span> </td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Id</td>	<td><button type="button" class="btn btn-default navbar-btn">Info</button></td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                    </tr>
+                    <tr>
+                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                    </tr>
+
+                </table>
+            </div>
+            <script type="text/javascript">
+                document.getElementById('failure').className = "label label-danger";
+                document.getElementById('failure').innerHTML = "label label-danger"
+            </script>
+
+            <ul class="pager">
+                <li class="previous disabled"><a href="#">&larr; Poprzednie</a></li>
+                <li class="next"><a href="#">Nastepne &rarr;</a></li>
+            </ul>
+
+
+
+
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+            <!-- Include all compiled plugins (below), or include individual files as needed -->
+            <script src="js/bootstrap.min.js"></script>
+    </body>
+</html>
