@@ -73,8 +73,9 @@ public class ElasticsearchMaster {
             int tankId = Integer.valueOf((String) nozzle.getSource().get("idZbiornika"));
             String startTime = (String) nozzle.getSource().get("czasPoczatkowy");
             String finishTime = (String) nozzle.getSource().get("czasKoncowy");
+            System.out.println(startTime);
+            System.out.println(finishTime);
             double nozzleValue = Double.valueOf((String) nozzle.getSource().get("objetoscBrutto"));
-
             double beforeStartTankMeasurement = findBeforeStartTankMeasurement(startTime, tankId);
             double afterStartTankMeasurement = findAfterStartTankMeasurement(startTime, tankId);
             double beforeFinishTankMeasurement = findBeforeFinishTankMeasurement(finishTime, tankId);
@@ -83,9 +84,9 @@ public class ElasticsearchMaster {
             boolean risk = checkIfFuelIsOut(nozzleValue, beforeStartTankMeasurement, afterStartTankMeasurement, beforeFinishTankMeasurement,
                     afterFinishTankMeasurement);
             if (risk) {
-                System.out.println(tankId + ":dla tego zestawu jest ryzyko");
-            } else {
                 System.out.println(tankId + " brak ryzyka");
+            } else {
+                System.out.println(tankId + ":dla tego zestawu jest ryzyko");
             }
 
             tankStatus.put(Integer.valueOf((String) nozzle.getSource().get("idZbiornika")), risk);
@@ -300,13 +301,18 @@ public class ElasticsearchMaster {
      * @param beforeStartTankMeasurement
      * @param afterStartTankMeasurement
      * @param beforeFinishTankMeasurement
-     * @param afterFinisihTankMeasurement
+     * @param afterFinishTankMeasurement
      * @return
      */
-    private boolean checkIfFuelIsOut(double nozzleValue, double beforeStartTankMeasurement, double afterStartTankMeasurement, double beforeFinishTankMeasurement, double afterFinisihTankMeasurement) {
+    private boolean checkIfFuelIsOut(double nozzleValue, double beforeStartTankMeasurement, double afterStartTankMeasurement, double beforeFinishTankMeasurement, double afterFinishTankMeasurement) {
+        System.out.println("beforeStartTankMeasurement: " + beforeStartTankMeasurement);
+        System.out.println("afterStartTankMeasurement: " + afterStartTankMeasurement);
+        System.out.println("beforeFinishTankMeasurement: " + beforeFinishTankMeasurement);
+        System.out.println("afterFinishTankMeasruement: " + afterFinishTankMeasurement);
+
         double beginningBorder = beforeStartTankMeasurement - nozzleValue;
         double finishBorder = beforeFinishTankMeasurement - nozzleValue;
-        if ((beforeFinishTankMeasurement >= beginningBorder) && (afterFinisihTankMeasurement >= finishBorder)) {
+        if ((beforeFinishTankMeasurement >= beginningBorder) && (afterFinishTankMeasurement >= finishBorder)) {
             return true;//everything is right
         } else {
             return false;

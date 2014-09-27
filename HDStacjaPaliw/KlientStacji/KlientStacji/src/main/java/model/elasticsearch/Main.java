@@ -5,14 +5,18 @@
  */
 package model.elasticsearch;
 
+import model.MonitorMaster;
+
 /**
  *
  * @author PeerZet
  */
 public class Main {
+
     public static ElasticsearchMaster master;
-    public static  void main(String args[]){
-        master = new ElasticsearchMaster();
-        master.searchAnomaly();
+
+    public static void main(String args[]) {
+        MonitorMaster monitor = new MonitorMaster();
+        monitor.check();
     }
 }

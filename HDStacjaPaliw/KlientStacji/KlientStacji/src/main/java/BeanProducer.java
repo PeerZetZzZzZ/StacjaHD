@@ -1,5 +1,5 @@
 
-import model.TankMonitor;
+import model.MonitorMaster;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +17,7 @@ public class BeanProducer {
     
     
     @Bean
-    public TankMonitor tankMonitor(){
-        return new TankMonitor();
+    public MonitorMaster tankMonitor(){
+        return new MonitorMaster();
     }
 }
