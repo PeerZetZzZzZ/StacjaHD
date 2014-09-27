@@ -12,6 +12,7 @@ import java.util.Map;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -30,7 +31,7 @@ public class ElasticsearchMaster {
 
     DateTime time = new DateTime();
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");//because of the pattern in .csv files
-    int periodEalierMinutesAmount = 400;//it will always scan 30 minutes before
+    int periodEalierMinutesAmount = 700;//it will always scan 30 minutes before
 
     String tankIndexName = "tank";
     String tankTypeName = "tank";
@@ -60,23 +61,39 @@ public class ElasticsearchMaster {
         return new ArrayList<Integer>();
     }
 
-    private SearchResponse getNozzlesMeasures(String start, String end) {
+    private HashMap<Integer, Boolean> getNozzlesMeasures(String start, String end) {
+        HashMap<Integer, Boolean> tankStatus = new HashMap<>();//the map contains the ID of the tank and it's current status
         start = getDateTimeWithT(start);
         end = getDateTimeWithT(end);
         SearchResponse response = client.prepareSearch("nozzle").setTypes("nozzle").
                 setPostFilter(FilterBuilders.rangeFilter("czasPoczatkowy").from(start).to(end)).execute().actionGet();
         Map<Integer, SearchHit> newestNozzles = getNewestNozzleMeasurements(response);
         for (SearchHit nozzle : newestNozzles.values()) {
-            double beforeStartTankMeasurement = findBeforeStartTankMeasurement((String) nozzle.getSource().get("czasPoczatkowy"),
-                    Integer.valueOf((String) nozzle.getSource().get("idZbiornika")));
-//            double afterStartTankMeasurement = findAfterStartTankMeasurement();
-//            double beforeFinishTankMeasurement = findBeforeFinishTankMeasurement();
-//            double afterFinisihTankMeasurement = findAfterFinishTankMeasurement();
-//            double nozzleValue = (double) nozzle.getSource().get("objetoscBrutto");
-//            boolean risk = checkIfFuelIsOut(nozzleValue, beforeStartTankMeasurement, afterStartTankMeasurement, beforeFinishTankMeasurement,
-//                    afterFinisihTankMeasurement);
+//            try {
+            int tankId = Integer.valueOf((String) nozzle.getSource().get("idZbiornika"));
+            String startTime = (String) nozzle.getSource().get("czasPoczatkowy");
+            String finishTime = (String) nozzle.getSource().get("czasKoncowy");
+            double nozzleValue = Double.valueOf((String) nozzle.getSource().get("objetoscBrutto"));
+
+            double beforeStartTankMeasurement = findBeforeStartTankMeasurement(startTime, tankId);
+            double afterStartTankMeasurement = findAfterStartTankMeasurement(startTime, tankId);
+            double beforeFinishTankMeasurement = findBeforeFinishTankMeasurement(finishTime, tankId);
+            double afterFinishTankMeasurement = findAfterFinishTankMeasurement(finishTime, tankId);
+
+            boolean risk = checkIfFuelIsOut(nozzleValue, beforeStartTankMeasurement, afterStartTankMeasurement, beforeFinishTankMeasurement,
+                    afterFinishTankMeasurement);
+            if (risk) {
+                System.out.println(tankId + ":dla tego zestawu jest ryzyko");
+            } else {
+                System.out.println(tankId + " brak ryzyka");
+            }
+
+            tankStatus.put(Integer.valueOf((String) nozzle.getSource().get("idZbiornika")), risk);
+//            } catch (NullPointerException ex) {//in case when it's not possible to read some values
+//                System.out.println("Exception");
+//            }
         }
-        return response;
+        return tankStatus;
 
     }
 
@@ -119,25 +136,23 @@ public class ElasticsearchMaster {
      * This method returns the first tank measurement just before startTime of
      * the nozzle measurement. Default value for checking the tank measurements
      * is 4 minutes before startTime, if anythning won't be found, it will be
-     * next +4 minutes.
+     * next -4 minutes.
      *
      * @param startTime
      * @return
      */
-    private double findBeforeStartTankMeasurement(String startTime, int tankId) {
-        System.out.println("tankid:" + tankId);
+    private double findBeforeStartTankMeasurement(String startTime, int tankId) throws NullPointerException {
         DateTime startDateTime = new DateTime(startTime);
         int INTERVAL = 4;
         SearchResponse response = null;
-        for (int i = 0; i < 14; i++) { //if we won't get result for 1h before sth is broken
+        for (int i = 0; i < 7000; i++) { //if we won't get result for 1h before sth is broken
             DateTime beforeDateTime = startDateTime.minusMinutes(INTERVAL);//we check measurement 4 minutes before startTime of the nozzle measure
-            response = client.prepareSearch("tank").setTypes("tank").
+            response = client.prepareSearch(tankIndexName).setTypes(tankTypeName).
+                    setQuery(QueryBuilders.termQuery("idZbiornika", tankId)).
                     setPostFilter(FilterBuilders.rangeFilter("stempelCzasowy").from(beforeDateTime).to(startTime)).
-                    setPostFilter(FilterBuilders.rangeFilter("idZbiornika").from(tankId).to(tankId)).
                     execute().actionGet();
             if (response != null) {
                 if (response.getHits().hits().length > 0) {
-                    System.out.println("Ile wynikow: " + response.getHits().hits().length);
                     break;
                 }
             }
@@ -158,23 +173,144 @@ public class ElasticsearchMaster {
                 }
             }
         }
-        System.out.println("Czas zbiornika " + theClosestTankTimestamp.getSource().get("stempelCzasowy"));
         return Double.valueOf((String) theClosestTankTimestamp.getSource().get("objetoscBrutto"));
     }
 
-    private double findAfterStartTankMeasurement() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * This method returns the first tank measurement just after startTime of
+     * the nozzle measurement. Default value for checking the tank measurements
+     * is 4 minutes before startTime, if anythning won't be found, it will be
+     * next +4 minutes.
+     *
+     * @param startTime
+     * @param tankId
+     * @return
+     */
+    private double findAfterStartTankMeasurement(String startTime, int tankId) throws NullPointerException {
+        DateTime startDateTime = new DateTime(startTime);
+        int INTERVAL = 4;
+        SearchResponse response = null;
+        for (int i = 0; i < 7000; i++) { //if we won't get result for 1h before sth is broken
+            DateTime afterDateTime = startDateTime.plusMinutes(INTERVAL);//we check measurement 4 minutes before startTime of the nozzle measure
+            response = client.prepareSearch(tankIndexName).setTypes(tankTypeName).
+                    setQuery(QueryBuilders.termQuery("idZbiornika", tankId)).
+                    setPostFilter(FilterBuilders.rangeFilter("stempelCzasowy").from(startTime).to(afterDateTime)).
+                    execute().actionGet();
+            if (response != null) {
+                if (response.getHits().hits().length > 0) {
+                    break;
+                }
+            }
+            INTERVAL += 4;
+        }//we found the newest tank measurement, the closest to the startTime of the nozzle measurement
+        SearchHit theClosestTankTimestamp = null;
+        for (SearchHit hit : response.getHits()) {
+            //If we dont have any tank measurement, well we have first
+            if (theClosestTankTimestamp == null) {
+                theClosestTankTimestamp = hit;
+            }//else we must find the closes tank measurement
+            else {
+                String dateTime = (String) hit.getSource().get("stempelCzasowy");//we are looking for the one which finished last
+                DateTime currentTankTimestamp = new DateTime(dateTime);
+                DateTime theLastNozzleTime = new DateTime(theClosestTankTimestamp.getSource().get("stempelCzasowy"));
+                if (currentTankTimestamp.isAfter(theLastNozzleTime)) {
+                    theClosestTankTimestamp = hit;//we found the closest
+                }
+            }
+        }
+        return Double.valueOf((String) theClosestTankTimestamp.getSource().get("objetoscBrutto"));
     }
 
-    private double findBeforeFinishTankMeasurement() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private double findBeforeFinishTankMeasurement(String finishTime, int tankId) throws NullPointerException {
+        DateTime startDateTime = new DateTime(finishTime);
+        int INTERVAL = 4;
+        SearchResponse response = null;
+        for (int i = 0; i < 10000; i++) { //if we won't get result for 1h before sth is broken
+            DateTime beforeDateTime = startDateTime.minusMinutes(INTERVAL);//we check measurement 4 minutes before startTime of the nozzle measure
+            response = client.prepareSearch(tankIndexName).setTypes(tankTypeName).
+                    setQuery(QueryBuilders.termQuery("idZbiornika", tankId)).
+                    setPostFilter(FilterBuilders.rangeFilter("stempelCzasowy").from(beforeDateTime).to(finishTime)).
+                    execute().actionGet();
+            if (response != null) {
+                if (response.getHits().hits().length > 0) {
+                    break;
+                }
+            }
+            INTERVAL += 4;
+        }//we found the newest tank measurement, the closest to the startTime of the nozzle measurement
+        SearchHit theClosestTankTimestamp = null;
+        for (SearchHit hit : response.getHits()) {
+            //If we dont have any tank measurement, well we have first
+            if (theClosestTankTimestamp == null) {
+                theClosestTankTimestamp = hit;
+            }//else we must find the closes tank measurement
+            else {
+                String dateTime = (String) hit.getSource().get("stempelCzasowy");//we are looking for the one which finished last
+                DateTime currentTankTimestamp = new DateTime(dateTime);
+                DateTime theLastNozzleTime = new DateTime(theClosestTankTimestamp.getSource().get("stempelCzasowy"));
+                if (currentTankTimestamp.isAfter(theLastNozzleTime)) {
+                    theClosestTankTimestamp = hit;//we found the closest
+                }
+            }
+        }
+        return Double.valueOf((String) theClosestTankTimestamp.getSource().get("objetoscBrutto"));
+
     }
 
-    private double findAfterFinishTankMeasurement() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private double findAfterFinishTankMeasurement(String finishTime, int tankId) throws NullPointerException {
+        DateTime startDateTime = new DateTime(finishTime);
+        int INTERVAL = 4;
+        SearchResponse response = null;
+        for (int i = 0; i < 10000; i++) { //if we won't get result for 1h before sth is broken
+            DateTime afterDateTime = startDateTime.plusMinutes(INTERVAL);//we check measurement 4 minutes before startTime of the nozzle measure
+            response = client.prepareSearch(tankIndexName).setTypes(tankTypeName).
+                    setQuery(QueryBuilders.termQuery("idZbiornika", tankId)).
+                    setPostFilter(FilterBuilders.rangeFilter("stempelCzasowy").from(finishTime).to(afterDateTime)).
+                    execute().actionGet();
+            if (response != null) {
+                if (response.getHits().hits().length > 0) {
+                    break;
+                }
+            }
+            INTERVAL += 4;
+        }//we found the newest tank measurement, the closest to the startTime of the nozzle measurement
+        SearchHit theClosestTankTimestamp = null;
+        for (SearchHit hit : response.getHits()) {
+            //If we dont have any tank measurement, well we have first
+            if (theClosestTankTimestamp == null) {
+                theClosestTankTimestamp = hit;
+            }//else we must find the closes tank measurement
+            else {
+                String dateTime = (String) hit.getSource().get("stempelCzasowy");//we are looking for the one which finished last
+                DateTime currentTankTimestamp = new DateTime(dateTime);
+                DateTime theLastNozzleTime = new DateTime(theClosestTankTimestamp.getSource().get("stempelCzasowy"));
+                if (currentTankTimestamp.isAfter(theLastNozzleTime)) {
+                    theClosestTankTimestamp = hit;//we found the closest
+                }
+            }
+        }
+        return Double.valueOf((String) theClosestTankTimestamp.getSource().get("objetoscBrutto"));
     }
 
+    /**
+     * Method decides if tank is good or bad. It checks if the predictable fuel
+     * value is in the real borders.
+     *
+     * @param nozzleValue
+     * @param beforeStartTankMeasurement
+     * @param afterStartTankMeasurement
+     * @param beforeFinishTankMeasurement
+     * @param afterFinisihTankMeasurement
+     * @return
+     */
     private boolean checkIfFuelIsOut(double nozzleValue, double beforeStartTankMeasurement, double afterStartTankMeasurement, double beforeFinishTankMeasurement, double afterFinisihTankMeasurement) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double beginningBorder = beforeStartTankMeasurement - nozzleValue;
+        double finishBorder = beforeFinishTankMeasurement - nozzleValue;
+        if ((beforeFinishTankMeasurement >= beginningBorder) && (afterFinisihTankMeasurement >= finishBorder)) {
+            return true;//everything is right
+        } else {
+            return false;
+        }
+
     }
 }
