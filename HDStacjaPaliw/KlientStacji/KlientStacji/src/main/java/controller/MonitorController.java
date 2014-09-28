@@ -25,8 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MonitorController extends HttpServlet {
 
     MonitorMaster mm = new MonitorMaster();
-    @Autowired
     TankData tankDelivery = new TankData();
+
+    private boolean sbAlreadyConnected = false;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -66,19 +67,29 @@ public class MonitorController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HashMap<Integer, Tank> tanks = tankDelivery.getTanks();
-        StringBuffer sb = new StringBuffer();
-        for (Tank tank : tanks.values()) {
-            sb.append("<tank>");
-            sb.append("<id>" + tank.getId() + "</id>");
-            sb.append("<state>" + tank.getState().toString() + "</state>");
-            sb.append("</tank>");
+        String numerZbiornika = request.getParameter("zbiornik");
+        System.out.println("req parametr: " + numerZbiornika);
+        if (numerZbiornika == null) {
+            if (!sbAlreadyConnected) {
+                sbAlreadyConnected = true;
+                HashMap<Integer, Tank> tanks = tankDelivery.getTanks();
+                StringBuffer sb = new StringBuffer();
+                for (Tank tank : tanks.values()) {
+                    sb.append("<tank>");
+                    sb.append("<id>" + tank.getId() + "</id>");
+                    sb.append("<state>" + tank.getState().toString() + "</state>");
+                    sb.append("</tank>");
+                }
+                response.setContentType("text/xml");
+                response.setHeader("Cache-Control", "no-cache");
+                System.out.println(sb.toString());
+                response.getWriter().write("" + sb);
+                sbAlreadyConnected = false;
+            }
+        } else {
+            //req parametr 1
+            
         }
-        response.setContentType("text/xml");
-        response.setHeader("Cache-Control", "no-cache");
-//        response.getWriter().write("<tanks>"+sb+"</tanks>");
-        System.out.println(sb.toString());
-        response.getWriter().write("" + sb);
     }
 
     /**

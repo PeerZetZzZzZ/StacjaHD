@@ -5,7 +5,6 @@
  */
 package model.ajax;
 
-import model.ajax.Tank;
 import java.util.HashMap;
 import model.elasticsearch.ElasticsearchMaster;
 

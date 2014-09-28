@@ -143,7 +143,7 @@ public class ElasticsearchMaster {
         DateTime startDateTime = new DateTime(time);
         int INTERVAL = 4;
         SearchResponse response = null;
-        for (int i = 0; i < 7000; i++) { //if we won't get result for 1h before sth is broken
+        for (int i = 0; i < 70000; i++) { //if we won't get result for 1h before sth is broken
             DateTime beforeDateTime = startDateTime.minusMinutes(INTERVAL);//we check measurement 4 minutes before startTime of the nozzle measure
             response = client.prepareSearch(tankIndexName).setTypes(tankTypeName).
                     setQuery(QueryBuilders.termQuery("idZbiornika", tankId)).
@@ -188,7 +188,7 @@ public class ElasticsearchMaster {
         DateTime startDateTime = new DateTime(time);
         int INTERVAL = 4;
         SearchResponse response = null;
-        for (int i = 0; i < 7000; i++) { //if we won't get result for 1h before sth is broken
+        for (int i = 0; i < 70000; i++) { //if we won't get result for 1h before sth is broken
             DateTime afterDateTime = startDateTime.plusMinutes(INTERVAL);//we check measurement 4 minutes before startTime of the nozzle measure
             response = client.prepareSearch(tankIndexName).setTypes(tankTypeName).
                     setQuery(QueryBuilders.termQuery("idZbiornika", tankId)).

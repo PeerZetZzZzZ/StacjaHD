@@ -30,72 +30,92 @@
                         <td><p><b>ID zbiornika</b></p></td>	   <td><p><b>Stan zbiornika</b></p></td>	<td><p><b>Dane zbiornika</b></p></td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika1">1</a></td>
+                        <td><a id="idZbiornika1"></a></td>
                         <td><span  id='stanZbiornika1' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika1" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(1)" id="stan1" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika2">2</a></td>
+                        <td><a id="idZbiornika2"></a></td>
                         <td><span  id='stanZbiornika2' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika2" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(2)" id="stan2" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika3">3</a></td>
+                        <td><a id="idZbiornika3"></a></td>
                         <td><span  id='stanZbiornika3' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika3" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(3)" id="stan3" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika4">4</a></td>
+                        <td><a id="idZbiornika4"></a></td>
                         <td><span  id='stanZbiornika4' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika4" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(4)" id="stan4" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika5">5</a></td>
+                        <td><a id="idZbiornika5"></a></td>
                         <td><span  id='stanZbiornika5' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika5" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(5)" id="stan5" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika6">6</a></td>
+                        <td><a id="idZbiornika6"></a></td>
                         <td><span  id='stanZbiornika6' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika6" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(6)" id="stan6" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika7">7</a></td>
+                        <td><a id="idZbiornika7"></a></td>
                         <td><span  id='stanZbiornika7' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika7" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(7)" id="stan7" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika8">8</a></td>
+                        <td><a id="idZbiornika8"></a></td>
                         <td><span  id='stanZbiornika8' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika8" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(8)" id="stan8" class="btn btn-default"></button>
+                        </td>
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika9">9</a></td>
+                        <td><a id="idZbiornika9"></a></td>
                         <td><span  id='stanZbiornika9' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika9" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(9)" id="stan9" class="btn btn-default"></button>
+                        </td>                    
                     </tr>
                     <tr>
-                        <td><a id="idZbiornika10">10</a></td>
+                        <td><a id="idZbiornika10"></a></td>
                         <td><span  id='stanZbiornika10' class="label label-success"></span></td>
-                        <td><a id="daneZbiornika" ></a> </td>
+                        <td>
+                            <button type="button" onclick="pokazZbiornik(10)" id="stan10" class="btn btn-default"></button>
+                        </td>
                     </tr>
                 </table>
             </div>
         </div>
-      
+
 
         <ul class="pager">
             <li class="previous disabled"><a href="#">&larr; Poprzednie</a></li>
             <li class="next"><a href="#">Nastepne &rarr;</a></li>
         </ul>
 
-        <script> 
+        <script>
             init();
-            window.setInterval(function(){
-               sendTankRequest();
-            },20000);
-        
-        
+            window.setInterval(function () {
+                sendTankRequest();
+            }, 20000);
+
+
         </script>
 
 
