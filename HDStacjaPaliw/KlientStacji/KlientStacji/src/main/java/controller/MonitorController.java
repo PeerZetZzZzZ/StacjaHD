@@ -7,17 +7,26 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MonitorMaster;
+import model.ajax.Tank;
+import model.ajax.TankData;
 import model.elasticsearch.ElasticsearchMaster;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author PeerZet
  */
 public class MonitorController extends HttpServlet {
+
+    MonitorMaster mm = new MonitorMaster();
+    @Autowired
+    TankData tankDelivery = new TankData();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -57,7 +66,19 @@ public class MonitorController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HashMap<Integer, Tank> tanks = tankDelivery.getTanks();
+        StringBuffer sb = new StringBuffer();
+        for (Tank tank : tanks.values()) {
+            sb.append("<tank>");
+            sb.append("<id>" + tank.getId() + "</id>");
+            sb.append("<state>" + tank.getState().toString() + "</state>");
+            sb.append("</tank>");
+        }
+        response.setContentType("text/xml");
+        response.setHeader("Cache-Control", "no-cache");
+//        response.getWriter().write("<tanks>"+sb+"</tanks>");
+        System.out.println(sb.toString());
+        response.getWriter().write("" + sb);
     }
 
     /**

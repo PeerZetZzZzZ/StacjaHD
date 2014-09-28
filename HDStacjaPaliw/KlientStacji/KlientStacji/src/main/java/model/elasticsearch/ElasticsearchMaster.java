@@ -5,9 +5,7 @@
  */
 package model.elasticsearch;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -31,7 +29,7 @@ public class ElasticsearchMaster {
 
     DateTime time = new DateTime();
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");//because of the pattern in .csv files
-    int periodEalierMinutesAmount = 700;//it will always scan 30 minutes before
+    int periodEalierMinutesAmount = 10000;//it will always scan 30 minutes before
 
     String tankIndexName = "tank";
     String tankTypeName = "tank";
@@ -53,12 +51,11 @@ public class ElasticsearchMaster {
      *
      * @return
      */
-    public List<Integer> searchAnomaly() {
+    public HashMap<Integer, Boolean> searchAnomaly() {
         DateTime now = new DateTime();//now time
         DateTime periodEalier = now.minusMinutes(periodEalierMinutesAmount);
-        getNozzlesMeasures(periodEalier.toString(formatter), now.toString(formatter));
+        return getNozzlesMeasures(periodEalier.toString(formatter), now.toString(formatter));
 
-        return new ArrayList<Integer>();
     }
 
     private HashMap<Integer, Boolean> getNozzlesMeasures(String start, String end) {

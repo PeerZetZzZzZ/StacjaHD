@@ -7,7 +7,6 @@ package model;
 
 import model.beanproducer.BeanDelivery;
 import model.elasticsearch.ElasticsearchMaster;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -16,16 +15,15 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class MonitorMaster {
 
-    ElasticsearchMaster elastic;
+    ElasticsearchMaster elastic = new ElasticsearchMaster();
 
     public MonitorMaster() {
         //SpringIOC container init
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(BeanDelivery.class);
-        ctx.refresh();
-        elastic = ctx.getBean(ElasticsearchMaster.class);
+//        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+//        ctx.register(BeanDelivery.class);
+//        ctx.refresh();
+//        elastic = ctx.getBean(ElasticsearchMaster.class);
     }
-
     public void check() {
         elastic.searchAnomaly();
     }

@@ -8,16 +8,18 @@ package model.beanproducer;
 import model.elasticsearch.ElasticsearchMaster;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Produces the Spring beans
  * @author PeerZet
  */
-@Configuration
+//@Configuration
+//@EnableScheduling
 public class BeanDelivery {
     
-   @Bean
-   public ElasticsearchMaster elasticsearchMaster(){
-       return new ElasticsearchMaster();
-   }
+//   @Bean
+//   public ElasticsearchMaster elasticsearchMaster(){
+//       return new ElasticsearchMaster();
+//   }
 }

@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Stacja benzynowa - Monitor</title>
-
+        <script type="text/javascript" src="TankStateUpdater.js"></script>
         <!-- Bootstrap -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
     </head>
@@ -15,7 +15,7 @@
             <form method="POST" action="/KlientStacji/MonitorController">
                 <p>Przejdz do Process Monitor'a stacji benzynowej!</p>
                 <p>
-                    <input name="button" value="Process monitor" type="submit" id="processMonitorButton"class="btn btn-primary btn-lg" role="button">
+                    <input name="button" value="Process monitor" type="submit" id="processMonitorButton" class="btn btn-primary btn-lg" role="button">
                 </p>
             </form>
         </div>
@@ -30,53 +30,78 @@
                         <td><p><b>ID zbiornika</b></p></td>	   <td><p><b>Stan zbiornika</b></p></td>	<td><p><b>Dane zbiornika</b></p></td>
                     </tr>
                     <tr>
-                        <td><span class="label label-success">Success</span></td>
-                        <td><span  id='failure' class="label label-success"> Success </span></td>
-                        <td><span class="label label-success">Success</span> </td>
+                        <td><a id="idZbiornika1">1</a></td>
+                        <td><span  id='stanZbiornika1' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika1" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Id</td>	<td><button type="button" class="btn btn-default navbar-btn">Info</button></td>
+                        <td><a id="idZbiornika2">2</a></td>
+                        <td><span  id='stanZbiornika2' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika2" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                        <td><a id="idZbiornika3">3</a></td>
+                        <td><span  id='stanZbiornika3' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika3" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                        <td><a id="idZbiornika4">4</a></td>
+                        <td><span  id='stanZbiornika4' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika4" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                        <td><a id="idZbiornika5">5</a></td>
+                        <td><span  id='stanZbiornika5' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika5" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                        <td><a id="idZbiornika6">6</a></td>
+                        <td><span  id='stanZbiornika6' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika6" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                        <td><a id="idZbiornika7">7</a></td>
+                        <td><span  id='stanZbiornika7' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika7" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                        <td><a id="idZbiornika8">8</a></td>
+                        <td><span  id='stanZbiornika8' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika8" ></a> </td>
                     </tr>
                     <tr>
-                        <td>Komorka 1</td><td>Komorka 2</td>	<td>Komorka3</td>
+                        <td><a id="idZbiornika9">9</a></td>
+                        <td><span  id='stanZbiornika9' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika9" ></a> </td>
                     </tr>
-
+                    <tr>
+                        <td><a id="idZbiornika10">10</a></td>
+                        <td><span  id='stanZbiornika10' class="label label-success"></span></td>
+                        <td><a id="daneZbiornika" ></a> </td>
+                    </tr>
                 </table>
             </div>
-            <script type="text/javascript">
-                document.getElementById('failure').className = "label label-danger";
-                document.getElementById('failure').innerHTML = "label label-danger"
-            </script>
+        </div>
+      
 
-            <ul class="pager">
-                <li class="previous disabled"><a href="#">&larr; Poprzednie</a></li>
-                <li class="next"><a href="#">Nastepne &rarr;</a></li>
-            </ul>
+        <ul class="pager">
+            <li class="previous disabled"><a href="#">&larr; Poprzednie</a></li>
+            <li class="next"><a href="#">Nastepne &rarr;</a></li>
+        </ul>
+
+        <script> 
+            init();
+            window.setInterval(function(){
+               sendTankRequest();
+            },20000);
+        
+        
+        </script>
 
 
-
-
-            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-            <!-- Include all compiled plugins (below), or include individual files as needed -->
-            <script src="js/bootstrap.min.js"></script>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="js/bootstrap.min.js"></script>
     </body>
 </html>
