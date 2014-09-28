@@ -13,10 +13,7 @@
         <div class="jumbotron">
             <h1>Monitor stacji benzynowej</h1>
             <form method="POST" action="/KlientStacji/MonitorController">
-                <p>Przejdz do Process Monitor'a stacji benzynowej!</p>
-                <p>
-                    <input name="button" value="Process monitor" type="submit" id="processMonitorButton" class="btn btn-primary btn-lg" role="button">
-                </p>
+                <input name="button" value="Process monitor" type="submit" id="processMonitorButton" class="btn btn-primary btn-lg" role="button">
             </form>
         </div>
         <div class="alert alert-danger" role="alert"> ALARM </div>
@@ -33,70 +30,111 @@
                         <td><a id="idZbiornika1"></a></td>
                         <td><span  id='stanZbiornika1' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(1)" id="stan1" class="btn btn-default"></button>
+                            <!--<button type="button" onclick="pokazZbiornik(1)" id="stan1" class="btn btn-default"></button>-->
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan1" type="submit" id="Stan1" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika2"></a></td>
                         <td><span  id='stanZbiornika2' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(2)" id="stan2" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="" type="submit" id="Stan2" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika3"></a></td>
                         <td><span  id='stanZbiornika3' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(3)" id="stan3" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan3" type="submit" id="Stan3" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika4"></a></td>
                         <td><span  id='stanZbiornika4' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(4)" id="stan4" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan4" type="submit" id="Stan4" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika5"></a></td>
                         <td><span  id='stanZbiornika5' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(5)" id="stan5" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan5" type="submit" id="Stan5" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika6"></a></td>
                         <td><span  id='stanZbiornika6' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(6)" id="stan6" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan6" type="submit" id="Stan6" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika7"></a></td>
                         <td><span  id='stanZbiornika7' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(7)" id="stan7" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan7" type="submit" id="Stan7" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika8"></a></td>
                         <td><span  id='stanZbiornika8' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(8)" id="stan8" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan8" type="submit" id="Stan8" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                     <tr>
                         <td><a id="idZbiornika9"></a></td>
                         <td><span  id='stanZbiornika9' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(9)" id="stan9" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan9" type="submit" id="Stan9" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>                    
                     </tr>
                     <tr>
                         <td><a id="idZbiornika10"></a></td>
                         <td><span  id='stanZbiornika10' class="label label-success"></span></td>
                         <td>
-                            <button type="button" onclick="pokazZbiornik(10)" id="stan10" class="btn btn-default"></button>
+                            <form method="POST" action="/KlientStacji/MonitorController">
+                                <p>
+                                    <input name="button" value="Stan10" type="submit" id="Stan10" class="btn btn-primary btn-small" role="button">
+                                </p>
+                            </form>
                         </td>
                     </tr>
                 </table>
@@ -111,6 +149,7 @@
 
         <script>
             init();
+            initButtons();
             window.setInterval(function () {
                 sendTankRequest();
             }, 20000);

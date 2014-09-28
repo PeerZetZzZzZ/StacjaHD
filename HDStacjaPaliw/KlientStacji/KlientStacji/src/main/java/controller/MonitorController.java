@@ -8,6 +8,7 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -67,28 +68,21 @@ public class MonitorController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String numerZbiornika = request.getParameter("zbiornik");
-        System.out.println("req parametr: " + numerZbiornika);
-        if (numerZbiornika == null) {
-            if (!sbAlreadyConnected) {
-                sbAlreadyConnected = true;
-                HashMap<Integer, Tank> tanks = tankDelivery.getTanks();
-                StringBuffer sb = new StringBuffer();
-                for (Tank tank : tanks.values()) {
-                    sb.append("<tank>");
-                    sb.append("<id>" + tank.getId() + "</id>");
-                    sb.append("<state>" + tank.getState().toString() + "</state>");
-                    sb.append("</tank>");
-                }
-                response.setContentType("text/xml");
-                response.setHeader("Cache-Control", "no-cache");
-                System.out.println(sb.toString());
-                response.getWriter().write("" + sb);
-                sbAlreadyConnected = false;
+        if (!sbAlreadyConnected) {
+            sbAlreadyConnected = true;
+            HashMap<Integer, Tank> tanks = tankDelivery.getTanks();
+            StringBuffer sb = new StringBuffer();
+            for (Tank tank : tanks.values()) {
+                sb.append("<tank>");
+                sb.append("<id>" + tank.getId() + "</id>");
+                sb.append("<state>" + tank.getState().toString() + "</state>");
+                sb.append("</tank>");
             }
-        } else {
-            //req parametr 1
-            
+            response.setContentType("text/xml");
+            response.setHeader("Cache-Control", "no-cache");
+            System.out.println(sb.toString());
+            response.getWriter().write("" + sb);
+            sbAlreadyConnected = false;
         }
     }
 
@@ -105,15 +99,33 @@ public class MonitorController extends HttpServlet {
             throws ServletException, IOException {
 
         String button = request.getParameter("button");
-        ElasticsearchMaster master = new ElasticsearchMaster();
-        master.searchAnomaly();
         if (button != null) {
             switch (button) {
                 case "Process monitor":
                     response.sendRedirect("/KlientStacji/kibana/index.html");
                     break;
-            }
+                default:
+                    if (button.equals("Stan1")) {
+                        response.setContentType("text/html;charset=UTF-8");
+                        Map<String, String> tankInfo = new HashMap();
+                        String tankNumber = button.substring(4, button.length());
+                        tankInfo = tankDelivery.getTankInfo(Integer.valueOf(tankNumber));
 
+                        System.out.println(tankInfo.get("idZbiornika"));
+                        System.out.println(tankInfo.get("stempelCzasowy"));
+                        System.out.println(tankInfo.get("objetoscBrutto"));
+                        System.out.println(tankInfo.get("objetoscNetto"));
+                        System.out.println(tankInfo.get("temperatura"));
+                        request.setAttribute("idZbiornika", tankInfo.get("idZbiornika")); // This will be available as ${message}
+                        request.setAttribute("stempelCzasowy", tankInfo.get("stempelCzasowy")); // This will be available as ${message}
+                        request.setAttribute("objetoscBrutto", tankInfo.get("objetoscBrutto")); // This will be available as ${message}
+                        request.setAttribute("objetoscNetto", tankInfo.get("objetoscNetto")); // This will be available as ${message}
+                        request.setAttribute("temperatura", tankInfo.get("temperatura")); // This will be available as ${message}
+                        request.getRequestDispatcher("/monitor/zbiornik.jsp").forward(request, response);
+                        response.sendRedirect("/monitor.zbiornik.jsp");
+                        break;
+                    }
+            }
         }
     }
 

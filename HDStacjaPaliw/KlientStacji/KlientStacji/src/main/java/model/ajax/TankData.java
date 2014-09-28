@@ -6,6 +6,7 @@
 package model.ajax;
 
 import java.util.HashMap;
+import java.util.Map;
 import model.elasticsearch.ElasticsearchMaster;
 
 /**
@@ -28,5 +29,9 @@ public class TankData {
 
     public TankData() {
 
+    }
+
+    public Map<String, String> getTankInfo(Integer tankId) {
+        return master.getTankInfo(tankId);
     }
 }

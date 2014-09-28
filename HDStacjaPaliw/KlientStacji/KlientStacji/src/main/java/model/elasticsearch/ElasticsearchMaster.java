@@ -29,7 +29,7 @@ public class ElasticsearchMaster {
 
     DateTime time = new DateTime();
     DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");//because of the pattern in .csv files
-    int periodEalierMinutesAmount = 10000;//it will always scan 30 minutes before
+    int periodEalierMinutesAmount = 20;//it will always scan 30 minutes before
 
     String tankIndexName = "tank";
     String tankTypeName = "tank";
@@ -54,42 +54,41 @@ public class ElasticsearchMaster {
     public HashMap<Integer, Boolean> searchAnomaly() {
         DateTime now = new DateTime();//now time
         DateTime periodEalier = now.minusMinutes(periodEalierMinutesAmount);
-        return getNozzlesMeasures(periodEalier.toString(formatter), now.toString(formatter));
+        return getNozzlesMeasures(periodEalier, now);
 
     }
 
-    private HashMap<Integer, Boolean> getNozzlesMeasures(String start, String end) {
+    private HashMap<Integer, Boolean> getNozzlesMeasures(DateTime start, DateTime end) {
         HashMap<Integer, Boolean> tankStatus = new HashMap<>();//the map contains the ID of the tank and it's current status
-        start = getDateTimeWithT(start);
-        end = getDateTimeWithT(end);
-        SearchResponse response = client.prepareSearch("nozzle").setTypes("nozzle").
-                setPostFilter(FilterBuilders.rangeFilter("czasPoczatkowy").from(start).to(end)).execute().actionGet();
+        SearchResponse response;
+        do {
+            String startString = getDateTimeWithT(start.toString(formatter));
+            System.out.println(start);
+            String endString = getDateTimeWithT(end.toString(formatter));
+            response = client.prepareSearch("nozzle").setTypes("nozzle").
+                    setPostFilter(FilterBuilders.rangeFilter("czasPoczatkowy").from(startString).to(endString)).execute().actionGet();
+            start = start.minusMinutes(periodEalierMinutesAmount);//if we didnt find anything, we go back - period 
+            System.out.print(response.getHits().hits().length);
+        } while (response.getHits().hits().length <= 0);
         Map<Integer, SearchHit> newestNozzles = getNewestNozzleMeasurements(response);
         for (SearchHit nozzle : newestNozzles.values()) {
-//            try {
             int tankId = Integer.valueOf((String) nozzle.getSource().get("idZbiornika"));
             String startTime = (String) nozzle.getSource().get("czasPoczatkowy");
             String finishTime = (String) nozzle.getSource().get("czasKoncowy");
-            System.out.println(startTime);
-            System.out.println(finishTime);
             double nozzleValue = Double.valueOf((String) nozzle.getSource().get("objetoscBrutto"));
             double beforeStartTankMeasurement = findBeforeTankMeasurement(startTime, tankId);
             double afterStartTankMeasurement = findAfterTankMeasurement(startTime, tankId);
             double beforeFinishTankMeasurement = findBeforeTankMeasurement(finishTime, tankId);
             double afterFinishTankMeasurement = findAfterTankMeasurement(finishTime, tankId);
-
             boolean risk = checkIfFuelIsOut(nozzleValue, beforeStartTankMeasurement, afterStartTankMeasurement, beforeFinishTankMeasurement,
                     afterFinishTankMeasurement);
             if (risk) {
                 System.out.println(tankId + " Brak ryzyka");
             } else {
-                System.out.println(tankId + ":dla tego zestawu jest ryzyko");
+                System.out.println(tankId + "Dla tego zestawu jest ryzyko");
             }
 
             tankStatus.put(Integer.valueOf((String) nozzle.getSource().get("idZbiornika")), risk);
-//            } catch (NullPointerException ex) {//in case when it's not possible to read some values
-//                System.out.println("Exception");
-//            }
         }
         return tankStatus;
 
@@ -245,4 +244,50 @@ public class ElasticsearchMaster {
         }
 
     }
+
+    public Map<String, String> getTankInfo(int tankId) {
+
+        DateTime end = new DateTime();//now time
+        DateTime start = end.minusMinutes(periodEalierMinutesAmount);
+        SearchResponse response;
+        do {
+            String startString = getDateTimeWithT(start.toString(formatter));
+            String endString = getDateTimeWithT(end.toString(formatter));
+            response = client.prepareSearch("tank").setTypes("tank").
+                    setPostFilter(FilterBuilders.rangeFilter("stempelCzasowy").from(startString).to(endString)).execute().actionGet();
+            start = start.minusMinutes(periodEalierMinutesAmount);//if we didnt find anything, we go back - period 
+        } while (response.getHits().hits().length <= 0);
+        Map<Integer, SearchHit> newestTank = getNewestTanMeasurement(response);
+        Map<String, String> tankInfo = new HashMap<>();
+        for (SearchHit hit : newestTank.values()) {
+            tankInfo.put("idZbiornika", (String) hit.getSource().get("idZbiornika"));
+            tankInfo.put("stempelCzasowy", (String) hit.getSource().get("stempelCzasowy"));
+            tankInfo.put("objetoscBrutto", (String) hit.getSource().get("objetoscBrutto"));
+            tankInfo.put("objetoscNetto", (String) hit.getSource().get("objetoscNetto"));
+            tankInfo.put("temperatura", (String) hit.getSource().get("temperatura"));
+        }
+        return tankInfo;
+    }
+
+    private Map<Integer, SearchHit> getNewestTanMeasurement(SearchResponse response) {
+        Map<Integer, SearchHit> listOfTankMeasurements = new HashMap<>();//this will contain the last measurement for every nozzle
+        for (SearchHit hit : response.getHits()) {
+            Integer tankId = Integer.valueOf((String) hit.getSource().get("idZbiornika"));
+            //If we dont have measurement for this nozzle yet, we add it
+            if (!listOfTankMeasurements.containsKey(tankId)) {
+                listOfTankMeasurements.put(tankId, hit);
+            }//else we must find the NEWEST nozzle measurement
+            else {
+                String dateTime = (String) hit.getSource().get("stempelCzasowy");//we are looking for the one which finished last
+                DateTime nozzleFinishTime = new DateTime(dateTime);
+                DateTime theLastNozzleTime = new DateTime(listOfTankMeasurements.get(tankId).getSource().get("stempelCzasowy"));
+                if (nozzleFinishTime.isAfter(theLastNozzleTime)) {
+                    listOfTankMeasurements.replace(tankId, hit);//we found the NEWEST and replace older
+                }
+            }
+        }
+        return listOfTankMeasurements;
+
+    }
+
 }
