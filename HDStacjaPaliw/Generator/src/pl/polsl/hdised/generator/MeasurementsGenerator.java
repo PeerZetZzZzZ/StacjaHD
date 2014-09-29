@@ -5,6 +5,7 @@
  */
 package pl.polsl.hdised.generator;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -26,12 +27,13 @@ public class MeasurementsGenerator {
     public MeasurementsGenerator()
     {
         Properties properties = new Properties(); 
-        InputStream inputStream = getClass().getResourceAsStream("/pl/polsl/hdised/config.properties");
+        //InputStream inputStream = getClass().getResourceAsStream("/pl/polsl/hdised/config.properties");
         try {  
+            InputStream inputStream = new FileInputStream("config.properties");
             properties.load(inputStream);  
         } catch (IOException e) {  
             System.out.println("Could not open config file");  
-        } 
+        }  
             
         nozzleMeasurementInterval = Integer.parseInt(properties.getProperty("nozzleMeasurementInterval"));  
         tankMeasurementInterval = Integer.parseInt(properties.getProperty("tankMeasurementInterval")); 

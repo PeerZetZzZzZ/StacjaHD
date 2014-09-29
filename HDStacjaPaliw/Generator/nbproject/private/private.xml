@@ -3,20 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/TankMeasures.csv</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/generator/MeasurementsGenerator.java</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/generator/NozzleDataAggregator.java</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/generator/NozzleDataGenerator.java</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/config.properties</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/manifest.mf</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/MeasurementsGeneratorApp.java</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/generator/TankDataGenerator.java</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/NozzleMeasures.csv</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/utils/ISO8601.java</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/nozzle.csv</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/models/NozzleReading.java</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/build.xml</file>
-            <file>file:/C:/Users/Mateusz/Documents/NetBeansProjects/MeasureGeneratorApp/src/pl/polsl/hdised/utils/CSVLogger.java</file>
+            <file>file:/C:/Users/Mateusz/Documents/GitHub/StacjaHD/HDStacjaPaliw/Generator/src/pl/polsl/hdised/generator/NozzleDataAggregator.java</file>
+            <file>file:/C:/Users/Mateusz/Documents/GitHub/StacjaHD/HDStacjaPaliw/Generator/src/pl/polsl/hdised/config.properties</file>
+            <file>file:/C:/Users/Mateusz/Documents/GitHub/StacjaHD/HDStacjaPaliw/Generator/src/pl/polsl/hdised/utils/ISO8601.java</file>
         </group>
     </open-files>
 </project-private>

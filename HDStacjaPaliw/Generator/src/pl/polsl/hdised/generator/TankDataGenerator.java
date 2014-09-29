@@ -44,12 +44,13 @@ public class TankDataGenerator extends TimerTask {
         this.tankID = tankID;
         meterState = initialMeterState;
         Properties properties = new Properties(); 
-        InputStream inputStream = getClass().getResourceAsStream("/pl/polsl/hdised/config.properties");
+        //InputStream inputStream = getClass().getResourceAsStream("/pl/polsl/hdised/config.properties");
         try {  
+            InputStream inputStream = new FileInputStream("config.properties");
             properties.load(inputStream);  
         } catch (IOException e) {  
             System.out.println("Could not open config file");  
-        }  
+        }   
         minTankRefillVolume = Double.parseDouble(properties.getProperty("minTankRefillVolume"));  
         maxTankRefillVolume = Double.parseDouble(properties.getProperty("maxTankRefillVolume"));
         minWaterIntrusionPerHour = Double.parseDouble(properties.getProperty("minWaterIntrusionPerHour")); 
