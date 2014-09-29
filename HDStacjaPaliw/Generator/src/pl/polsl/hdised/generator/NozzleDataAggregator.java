@@ -67,8 +67,8 @@ public class NozzleDataAggregator extends TimerTask {
         startDate = toAggregate.get(0).getTime();
         endDate = toAggregate.get(toAggregate.size()-1).getTime();
        
-        logger.logLine(aggregatedNozzleData, Arrays.asList(toAggregate.get(0).getTankID().toString(), 
-                                                           toAggregate.get(0).getNozzleID().toString(),
+        logger.logLine(aggregatedNozzleData, Arrays.asList(toAggregate.get(0).getNozzleID().toString(),
+                                                           toAggregate.get(0).getTankID().toString(), 
                                                            ISO8601.fromCalendar(startDate),
                                                            ISO8601.fromCalendar(endDate),
                                                            value.toString(),
