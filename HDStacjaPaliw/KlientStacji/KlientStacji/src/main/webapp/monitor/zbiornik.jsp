@@ -7,7 +7,7 @@
         <title>Stacja benzynowa - Monitor. Zbiornik info.</title>
         <script type="text/javascript" src="TankStateUpdater.js"></script>
         <!-- Bootstrap -->
-        <link href="../webapp/monitor/css/bootstrap.min.css" rel="stylesheet">
+        <link href="monitor/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
         <div class="jumbotron">
@@ -16,11 +16,11 @@
                 <input name="button" value="Process monitor" type="submit" id="processMonitorButton" class="btn btn-primary btn-lg" role="button">
             </form>
         </div>
-        <p class="navbar-text navbar-right">ID Zbiornika: ${idZbiornika} </p>
-        <p class="navbar-text navbar-right">Najnowszy pomiar: ${stempelCzasowy} </p>
-        <p class="navbar-text navbar-right">Objetosc paliwa brutto: ${objetoscBrutto}</p>
-        <p class="navbar-text navbar-right">Objetosc paliwa netto: ${objetoscNetto}</p>
-        <p class="navbar-text navbar-right">Temperatura: ${temperatura}</p>
+        <div class="panel panel-primary">ID Zbiornika: ${idZbiornika} </div>
+        <div class="panel panel-primary">Najnowszy pomiar: ${stempelCzasowy}</div>
+        <div class="panel panel-primary"> Objetosc paliwa brutto: ${objetoscBrutto}</div>
+        <div class="panel panel-primary">Objetosc paliwa netto: ${objetoscNetto}</div>
+        <div class="panel panel-primary">Temperatura: ${temperatura}</div>
     </body>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

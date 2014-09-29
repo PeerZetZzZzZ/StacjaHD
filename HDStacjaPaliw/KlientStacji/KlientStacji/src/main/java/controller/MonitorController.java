@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import model.MonitorMaster;
 import model.ajax.Tank;
 import model.ajax.TankData;
-import model.elasticsearch.ElasticsearchMaster;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -69,14 +67,21 @@ public class MonitorController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (!sbAlreadyConnected) {
+            String pageCounter = request.getParameter("licznik");
+            Integer numberOfPage = Integer.valueOf(pageCounter);
             sbAlreadyConnected = true;
             HashMap<Integer, Tank> tanks = tankDelivery.getTanks();
             StringBuffer sb = new StringBuffer();
+            int counter = 0;
+            int numberOfLeft = numberOfPage * 10;//maximum 10 results on page
             for (Tank tank : tanks.values()) {
-                sb.append("<tank>");
-                sb.append("<id>" + tank.getId() + "</id>");
-                sb.append("<state>" + tank.getState().toString() + "</state>");
-                sb.append("</tank>");
+                if (counter >= numberOfLeft) {//if the already leaved the results from 1st page
+                    sb.append("<tank>");
+                    sb.append("<id>" + tank.getId() + "</id>");
+                    sb.append("<state>" + tank.getState().toString() + "</state>");
+                    sb.append("</tank>");
+                }
+                counter++;
             }
             response.setContentType("text/xml");
             response.setHeader("Cache-Control", "no-cache");
@@ -122,7 +127,6 @@ public class MonitorController extends HttpServlet {
                         request.setAttribute("objetoscNetto", tankInfo.get("objetoscNetto")); // This will be available as ${message}
                         request.setAttribute("temperatura", tankInfo.get("temperatura")); // This will be available as ${message}
                         request.getRequestDispatcher("/monitor/zbiornik.jsp").forward(request, response);
-                        response.sendRedirect("/monitor.zbiornik.jsp");
                         break;
                     }
             }

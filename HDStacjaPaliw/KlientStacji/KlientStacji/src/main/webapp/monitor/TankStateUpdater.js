@@ -1,4 +1,5 @@
 var xmlhttp;
+var licznikStron = 0;
 function init() {
     if (window.XMLHttpRequest)
     {
@@ -11,63 +12,91 @@ function init() {
 
 }
 function sendTankRequest() {
-    xmlhttp.open("GET", "/KlientStacji/MonitorController", true)
+    url = "/KlientStacji/MonitorController?licznik=" + licznikStron;
+    xmlhttp.open("GET", url, true)
     xmlhttp.setRequestHeader('X-Request-With', 'XMLHttpRequest');
     xmlhttp.send(null);
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200)
             {
-                updateTankTable(xmlhttp.responseXML);
+                updateTankTable();
+
             }
             else
             {
-                //request failed
+                reqFailed();
             }
+        }
+        else {
+            reqFailed();
         }
     };
 
 }
-function updateTankTable(xml) {
-    ids = xml.getElementsByTagName("id");
-    states = xml.getElementsByTagName("state");
-    for (i = 0; i < ids.length; i++) {
+function updateTankTable() {
+    var ids = xmlhttp.responseXML.getElementsByTagName("id");
+    var states = xmlhttp.responseXML.getElementsByTagName("state");
+    for (i = 0; i < 10; i++) {
         var inkrementator = i + 1;
-        element = "idZbiornika" + inkrementator.toString();
+        var element = "idZbiornika" + inkrementator.toString();
         document.getElementById(element).innerHTML = ids[i].childNodes[0].nodeValue;
-        stan = states[i].childNodes[0].nodeValue;
-        elementStan = "stanZbiornika" + inkrementator.toString();
-        elementGuzik = "Stan" + inkrementator.toString();
+        var stan = states[i].childNodes[0].nodeValue;
+        var elementStan = "stanZbiornika" + inkrementator.toString();
+        var elementGuzik = "Stan" + inkrementator.toString();
         var wartoscGuzika = "Stan" + ids[i].childNodes[0].nodeValue;
+
         if (stan == "true") {
             document.getElementById(elementStan).innerHTML = "STABILNY";
             document.getElementById(elementStan).className = "label label-success";
             document.getElementById(elementGuzik).value = wartoscGuzika;
             document.getElementById(elementGuzik).style.display = 'block';
         }
-        else {
+        else if (stan == "false") {
             document.getElementById(elementStan).innerHTML = "NIESTABILNY";
             document.getElementById(elementStan).className = "label label-danger";
             document.getElementById(elementGuzik).value = wartoscGuzika;
             document.getElementById(elementGuzik).style.display = 'block';
+        } else {
+            document.getElementById(element).innerHTML = "";
+            document.getElementById(elementStan).innerHTML = "";
+            document.getElementById(elementStan).className = "label label-success";
+            document.getElementById(elementGuzik).value = "";
+            document.getElementById(elementGuzik).style.display = 'none';
         }
+        document.getElementById(elementStan).innerHTML = stan;
     }
 }
 function initButtons() {
     for (i = 1; i < 11; i++) {
-        var guzik = "Stan"+i;
+        var guzik = "Stan" + i;
         document.getElementById(guzik).style.display = 'none';
     }
 }
-//function pokazZbiornik(numerGuzika) {
-//    element = "idZbiornika" + numerGuzika.toString();
-//    var numerZbiornika = document.getElementById(element).innerHTML;
-//    sendStanRequest(numerZbiornika);
-//}
-//
-//function sendStanRequest(numerZbiornika) {
-//    var url = "/KlientStacji/MonitorController?zbiornik=" + numerZbiornika.toString();
-//    xmlhttp.open("GET", url, false)
-//    xmlhttp.send(null);
-//
-//}
+
+function nextPage() {
+    licznik = licznikStron + 1;
+    licznikStron = licznik;
+    sendTankRequest();
+}
+function previousPage() {
+    if (licznik > 0) {
+        licznik = licznikStron - 1;
+        licznikStron = licznik;
+        sendTankRequest();
+    }
+}
+
+function reqFailed() {
+    for (i = 0; i < 10; i++) {
+        var inkrementator = i + 1;
+        var elementStan = "stanZbiornika" + inkrementator.toString();
+        var elementGuzik = "Stan" + inkrementator.toString();
+        var element = "idZbiornika" + inkrementator.toString();
+        document.getElementById(element).innerHTML = "";
+        document.getElementById(elementStan).innerHTML = "";
+        document.getElementById(elementStan).className = "label label-success";
+        document.getElementById(elementGuzik).value = "";
+        document.getElementById(elementGuzik).style.display = 'none';
+    }
+}

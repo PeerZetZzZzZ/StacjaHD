@@ -16,7 +16,6 @@
                 <input name="button" value="Process monitor" type="submit" id="processMonitorButton" class="btn btn-primary btn-lg" role="button">
             </form>
         </div>
-        <div class="alert alert-danger" role="alert"> ALARM </div>
         <div class="panel panel-default">
             <!-- Default panel contents -->
             <div class="panel-heading">Monitor systemu</div>
@@ -141,10 +140,10 @@
             </div>
         </div>
 
-
         <ul class="pager">
-            <li class="previous disabled"><a href="#">&larr; Poprzednie</a></li>
-            <li class="next"><a href="#">Nastepne &rarr;</a></li>
+            <li class="previous"><a onclick="previousPage()"  href="#">&larr; Poprzednie</a></li>
+            <li class="next"><a onclick="nextPage()" href="#">Nastepne &rarr;</a></li>
+
         </ul>
 
         <script>
